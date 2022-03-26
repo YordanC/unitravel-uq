@@ -1,20 +1,48 @@
 package co.edu.uniquindio.unitravel.entidades;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
+@NoArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+
 public class Libro implements Serializable {
     @Id
+    @EqualsAndHashCode.Include
+    @Column(length = 13)
     private String isbn;
-    private  String nombre;
-    private  int unidades;
-    private short anio;
 
-    public Libro() {
-    }
+    @Column(nullable = false,length = 200)
+    private  String nombre;
+
+    @PositiveOrZero
+    @Column(nullable = false)
+    private  int unidades;
+
+    @Column(nullable = false)
+    @Max(9999)
+    private short anio;
+    @Enumerated(EnumType.STRING)
+    private Genero genero;
+    @ManyToMany(mappedBy = "libros")
+    private List<Prestamo> prestamos;
+
+    @ManyToMany
+    private List<Autor> autores;
 
     public Libro(String isbn, String nombre, int unidades, short anio) {
         this.isbn = isbn;
@@ -23,48 +51,7 @@ public class Libro implements Serializable {
         this.anio = anio;
     }
 
-    public String getIsbn() {
-        return isbn;
-    }
 
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
 
-    public String getNombre() {
-        return nombre;
-    }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public int getUnidades() {
-        return unidades;
-    }
-
-    public void setUnidades(int unidades) {
-        this.unidades = unidades;
-    }
-
-    public short getAnio() {
-        return anio;
-    }
-
-    public void setAnio(short anio) {
-        this.anio = anio;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Libro libro = (Libro) o;
-        return isbn.equals(libro.isbn);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(isbn);
-    }
 }
